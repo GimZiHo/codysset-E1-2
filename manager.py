@@ -15,23 +15,22 @@ class QuizManager:
         self.load_score()
 
     def load_quizzes(self):
-        """quizzes.json 파일에서 퀴즈 목록 불러오기"""
-        if not os.path.exists(self.quiz_filename):
-            # 파일이 없으면 기본 퀴즈 생성 후 저장
-            self.quizzes = [
-                Quiz("파이썬에서 화면에 문자를 출력하는 함수는?", ["1) input", "2) print", "3) len", "4) type"], "2"),
-                Quiz("다음 중 참/거짓을 나타내는 자료형은?", ["1) Int", "2) String", "3) Boolean", "4) Float"], "3")
-            ]
-            self.save_quizzes()
-        else:
-            try:
-                with open(self.quiz_filename, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    self.quizzes = [Quiz.from_dict(item) for item in data]
-            except Exception as e:
-                print(f"⚠️ 퀴즈 데이터 로드 실패: {e}")
-                self.quizzes = []
-
+            """JSON 데이터 로드 시 손상 예외 처리"""
+            if not os.path.exists(self.quiz_filename):
+                self.quizzes = [
+                    Quiz("파이썬에서 화면에 문자를 출력하는 함수는?", ["1) input", "2) print", "3) len", "4) type"], "2"),
+                    Quiz("다음 중 참/거짓을 나타내는 자료형은?", ["1) Int", "2) String", "3) Boolean", "4) Float"], "3")
+                ]
+                self.save_quizzes()
+            else:
+                try:
+                    with open(self.quiz_filename, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        self.quizzes = [Quiz.from_dict(item) for item in data]
+                except (json.JSONDecodeError, Exception) as e:
+                    print(f"⚠️ JSON 데이터 로드 실패(파일 손상 가능성): {e}")
+                    self.quizzes = []  # 기본 빈 리스트로 안전 처리
+                
     def save_quizzes(self):
         """현재 퀴즈 목록을 quizzes.json 파일로 저장"""
         with open(self.quiz_filename, "w", encoding="utf-8") as f:

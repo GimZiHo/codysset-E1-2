@@ -18,21 +18,26 @@ class QuizGame:
             print("5. 게임 종료")
             print("=" * 35)
 
-            choice = input("원하는 메뉴 번호를 입력하세요: ").strip()
+            # 예외 처리: 메뉴 선택 시 숫자 및 범위 검증
+            try:
+                choice = int(input("원하는 메뉴 번호를 입력하세요 (1-5): ").strip())
+            except ValueError:
+                print("\n⚠️ 문자가 아닌 [숫자]만 입력해 주세요!")
+                continue  # 메뉴를 다시 출력하도록 맨 위로 이동
 
-            if choice == "1":
+            if choice == 1:
                 self.play_quiz()
-            elif choice == "2":
+            elif choice == 2:
                 self.add_quiz_ui()
-            elif choice == "3":
+            elif choice == 3:
                 self.show_quizzes()
-            elif choice == "4":
+            elif choice == 4:
                 self.show_highest_score()
-            elif choice == "5":
+            elif choice == 5:
                 print("\n👋 게임을 종료합니다. 이용해 주셔서 감사합니다!")
                 break
             else:
-                print("\n⚠️ 잘못된 번호입니다. 1~5번 중에서 선택해 주세요.")
+                print("\n⚠️ 1~5번 사이의 번호를 입력해 주세요.")
 
     def play_quiz(self):
         if not self.manager.quizzes:
@@ -48,9 +53,20 @@ class QuizGame:
             for opt in q.options:
                 print(f"   {opt}")
 
-            user_ans = input("정답 번호를 입력하세요: ").strip()
+            # 예외 처리: 올바른 정답 번호(1~4)가 입력될 때까지 반복 받기
+            while True:
+                try:
+                    user_ans = int(input("정답 번호를 입력하세요 (1-4): ").strip())
+                    if 1 <= user_ans <= len(q.options):
+                        user_ans_str = str(user_ans)
+                        break
+                    else:
+                        print(f"⚠️ 1번부터 {len(q.options)}번 사이의 번호를 선택해 주세요.")
+                except ValueError:
+                    print("⚠️ 숫자로 입력해 주세요!")
 
-            if user_ans == q.answer:
+            # 정답 검증
+            if user_ans_str == q.answer:
                 print("✅ 정답입니다!")
                 current_score += 10
             else:
@@ -66,17 +82,37 @@ class QuizGame:
 
     def add_quiz_ui(self):
         print("\n➕ [새 퀴즈 추가]")
-        question = input("문제 내용을 입력하세요: ").strip()
+        
+        # 빈 문자열 입력 방지
+        while True:
+            question = input("문제 내용을 입력하세요: ").strip()
+            if question:
+                break
+            print("⚠️ 문제 내용은 비워둘 수 없습니다.")
         
         options = []
         for i in range(1, 5):
-            opt_text = input(f"선택지 {i}번 입력: ").strip()
-            options.append(f"{i}) {opt_text}")
+            while True:
+                opt_text = input(f"선택지 {i}번 입력: ").strip()
+                if opt_text:
+                    options.append(f"{i}) {opt_text}")
+                    break
+                print("⚠️ 선택지 내용은 비워둘 수 없습니다.")
             
-        answer = input("정답 번호(1~4)를 입력하세요: ").strip()
+        # 정답 번호 예외 처리
+        while True:
+            try:
+                answer = int(input("정답 번호(1~4)를 입력하세요: ").strip())
+                if 1 <= answer <= 4:
+                    answer_str = str(answer)
+                    break
+                else:
+                    print("⚠️ 1번에서 4번 사이의 번호를 입력해 주세요.")
+            except ValueError:
+                print("⚠️ 숫자로 정답 번호를 입력해 주세요.")
 
-        self.manager.add_quiz(question, options, answer)
-        print("✅ 새 퀴즈가 저장되었습니다!")
+        self.manager.add_quiz(question, options, answer_str)
+        print("✅ 새 퀴즈가 안전하게 저장되었습니다!")
 
     def show_quizzes(self):
         quizzes = self.manager.quizzes
