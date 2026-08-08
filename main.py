@@ -6,6 +6,16 @@ class QuizGame:
         self.manager = QuizManager()
 
     def run(self):
+        """입력 중단 예외를 처리하며 게임 실행"""
+        try:
+            self.run_menu()
+        except (KeyboardInterrupt, EOFError):
+            print("\n\n⚠️ 입력이 중단되어 게임을 종료합니다.")
+            if self.manager.save_state():
+                print("💾 현재 상태를 안전하게 저장했습니다.")
+            print("👋 이용해 주셔서 감사합니다!")
+
+    def run_menu(self):
         """메인 실행 루프"""
         while True:
             print("\n" + "=" * 35)
