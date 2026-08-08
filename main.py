@@ -1,3 +1,5 @@
+import random
+
 from manager import QuizManager
 
 class QuizGame:
@@ -63,6 +65,12 @@ class QuizGame:
 
             print(f"⚠️ {minimum}부터 {maximum} 사이의 숫자를 입력해 주세요.")
 
+    def select_random_quizzes(self, quiz_count):
+        """원본 순서를 유지하며 퀴즈를 무작위로 선택"""
+        shuffled_quizzes = self.manager.quizzes.copy()
+        random.shuffle(shuffled_quizzes)
+        return shuffled_quizzes[:quiz_count]
+
     def play_quiz(self):
         if not self.manager.quizzes:
             print("\n⚠️ 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해주세요!")
@@ -73,7 +81,7 @@ class QuizGame:
             1,
             len(self.manager.quizzes)
         )
-        selected_quizzes = self.manager.quizzes[:quiz_count]
+        selected_quizzes = self.select_random_quizzes(quiz_count)
 
         print(f"\n🚀 퀴즈를 시작합니다! (총 {quiz_count}문제)")
         earned_score = 0
