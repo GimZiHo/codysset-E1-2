@@ -69,7 +69,8 @@ class QuizGame:
             return
 
         print("\n🚀 퀴즈를 시작합니다!")
-        current_score = 0
+        earned_score = 0
+        hint_penalty = 0
 
         for q in self.manager.quizzes:
             print("\n------------------------------")
@@ -87,7 +88,8 @@ class QuizGame:
                         print("⚠️ 힌트는 한 번만 사용할 수 있습니다.")
                     elif q.hint:
                         hint_used = True
-                        print(f"💡 힌트: {q.hint}")
+                        hint_penalty += 10
+                        print(f"💡 힌트: {q.hint} (-10점)")
                     else:
                         print("⚠️ 이 문제에는 힌트가 없습니다.")
                     continue
@@ -95,22 +97,24 @@ class QuizGame:
 
             # 정답 검증
             if q.check_answer(user_ans):
-                earned_score = 10 if hint_used else 20
-                current_score += earned_score
-                print(f"✅ 정답입니다! (+{earned_score}점)")
+                earned_score += 20
+                print("✅ 정답입니다! (+20점)")
             else:
                 print(f"❌ 틀렸습니다. (정답: {q.answer}번)")
 
         print("\n🎉 모든 퀴즈가 끝났습니다!")
         total_possible = len(self.manager.quizzes) * 20
-        print(f"당신의 최종 점수: {current_score}점 / {total_possible}점")
+        final_score = max(0, earned_score - hint_penalty)
+        print(f"획득 점수: {earned_score}점")
+        print(f"힌트 감점: -{hint_penalty}점")
+        print(f"당신의 최종 점수: {final_score}점 / {total_possible}점")
 
         if not self.manager.has_played:
-            self.manager.save_score(current_score)
+            self.manager.save_score(final_score)
             print("📝 첫 점수가 기록되었습니다.")
-        elif current_score > self.manager.highest_score:
+        elif final_score > self.manager.highest_score:
             print("🏆 축하합니다! 최고 점수를 달성했습니다!")
-            self.manager.save_score(current_score)
+            self.manager.save_score(final_score)
 
     def add_quiz_ui(self):
         print("\n➕ [새 퀴즈 추가]")
