@@ -1,5 +1,7 @@
 import json
 import os
+from datetime import datetime
+
 from models import Quiz
 
 
@@ -44,6 +46,7 @@ class QuizManager:
         self.quizzes = []
         self.highest_score = 0
         self.has_played = False
+        self.score_history = []
         
         # 프로그램 시작 시 데이터 불러오기
         self.load_state()
@@ -58,16 +61,31 @@ class QuizManager:
                 quiz_data = data["quizzes"]
                 best_score = data["best_score"]
                 has_played = data.get("has_played", best_score > 0)
+                score_history = data.get("score_history", [])
                 if not isinstance(quiz_data, list):
                     raise ValueError("quizzes는 리스트여야 합니다.")
                 if not isinstance(best_score, int) or best_score < 0:
                     raise ValueError("best_score는 0 이상의 정수여야 합니다.")
                 if not isinstance(has_played, bool):
                     raise ValueError("has_played는 참/거짓 값이어야 합니다.")
+                if not isinstance(score_history, list):
+                    raise ValueError("score_history는 리스트여야 합니다.")
+                for record in score_history:
+                    if not isinstance(record, dict):
+                        raise ValueError("점수 기록은 객체 형식이어야 합니다.")
+                    if not isinstance(record.get("played_at"), str):
+                        raise ValueError("점수 기록의 날짜가 잘못되었습니다.")
+                    if not isinstance(record.get("quiz_count"), int):
+                        raise ValueError("점수 기록의 문제 수가 잘못되었습니다.")
+                    if not isinstance(record.get("score"), int):
+                        raise ValueError("점수 기록의 점수가 잘못되었습니다.")
+                    if not isinstance(record.get("max_score"), int):
+                        raise ValueError("점수 기록의 만점이 잘못되었습니다.")
 
                 self.quizzes = [Quiz.from_dict(item) for item in quiz_data]
                 self.highest_score = best_score
                 self.has_played = has_played
+                self.score_history = score_history
                 return
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
             print(f"⚠️ state.json을 불러오지 못했습니다: {e}")
@@ -78,6 +96,7 @@ class QuizManager:
         self.quizzes = [Quiz.from_dict(item) for item in DEFAULT_QUIZ_DATA]
         self.highest_score = 0
         self.has_played = False
+        self.score_history = []
         self.save_state()
 
     def save_state(self):
@@ -85,7 +104,8 @@ class QuizManager:
         data = {
             "quizzes": [q.to_dict() for q in self.quizzes],
             "best_score": self.highest_score,
-            "has_played": self.has_played
+            "has_played": self.has_played,
+            "score_history": self.score_history
         }
         try:
             with open(self.state_filename, "w", encoding="utf-8") as f:
@@ -95,11 +115,29 @@ class QuizManager:
             print(f"⚠️ state.json을 저장하지 못했습니다: {e}")
             return False
 
-    def save_score(self, score):
-        """새 최고 점수를 state.json에 저장"""
-        self.highest_score = score
+    def record_game(self, score, quiz_count, max_score):
+        """게임 결과를 기록하고 최고 점수 갱신"""
+        previous_highest_score = self.highest_score
+        previous_has_played = self.has_played
+        is_new_highest = not self.has_played or score > self.highest_score
+
+        self.score_history.append({
+            "played_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "quiz_count": quiz_count,
+            "score": score,
+            "max_score": max_score
+        })
+        if is_new_highest:
+            self.highest_score = score
         self.has_played = True
-        self.save_state()
+
+        if self.save_state():
+            return is_new_highest
+
+        self.score_history.pop()
+        self.highest_score = previous_highest_score
+        self.has_played = previous_has_played
+        return None
 
     def add_quiz(self, question, choices, answer, hint):
         """새 퀴즈 추가 후 JSON 저장"""

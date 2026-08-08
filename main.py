@@ -128,12 +128,16 @@ class QuizGame:
         print(f"힌트 감점: {penalty_text}")
         print(f"당신의 최종 점수: {final_score}점 / {total_possible}점")
 
-        if not self.manager.has_played:
-            self.manager.save_score(final_score)
+        had_played = self.manager.has_played
+        is_new_highest = self.manager.record_game(
+            final_score, quiz_count, total_possible
+        )
+        if is_new_highest is None:
+            print("⚠️ 게임 기록을 저장하지 못했습니다.")
+        elif not had_played:
             print("📝 첫 점수가 기록되었습니다.")
-        elif final_score > self.manager.highest_score:
+        elif is_new_highest:
             print("🏆 축하합니다! 최고 점수를 달성했습니다!")
-            self.manager.save_score(final_score)
 
     def add_quiz_ui(self):
         print("\n➕ [새 퀴즈 추가]")
@@ -194,6 +198,16 @@ class QuizGame:
             print("\n🏆 아직 기록된 점수가 없습니다.")
         else:
             print(f"\n🏆 현재 최고 점수: {self.manager.highest_score}점")
+
+        if self.manager.score_history:
+            print("\n📋 [점수 기록]")
+            for index, record in enumerate(self.manager.score_history, start=1):
+                played_at = record["played_at"].replace("T", " ")
+                print(
+                    f"{index}. {played_at} | "
+                    f"{record['quiz_count']}문제 | "
+                    f"{record['score']}/{record['max_score']}점"
+                )
 
 
 if __name__ == "__main__":

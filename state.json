@@ -32,5 +32,6 @@
         }
     ],
     "best_score": 80,
-    "has_played": true
+    "has_played": true,
+    "score_history": []
 }
