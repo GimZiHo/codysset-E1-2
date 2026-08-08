@@ -106,3 +106,12 @@ class QuizManager:
         new_quiz = Quiz(question, choices, answer, hint)
         self.quizzes.append(new_quiz)
         self.save_state()
+
+    def delete_quiz(self, quiz_index):
+        """선택한 퀴즈를 삭제하고 JSON에 반영"""
+        deleted_quiz = self.quizzes.pop(quiz_index)
+        if self.save_state():
+            return deleted_quiz
+
+        self.quizzes.insert(quiz_index, deleted_quiz)
+        return None

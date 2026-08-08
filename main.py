@@ -27,11 +27,12 @@ class QuizGame:
             print("2. 퀴즈 추가하기")
             print("3. 퀴즈 목록 보기")
             print("4. 최고 점수 확인")
-            print("5. 게임 종료")
+            print("5. 퀴즈 삭제하기")
+            print("6. 게임 종료")
             print("=" * 35)
 
             choice = self.get_number(
-                "원하는 메뉴 번호를 입력하세요 (1-5): ", 1, 5
+                "원하는 메뉴 번호를 입력하세요 (1-6): ", 1, 6
             )
 
             if choice == 1:
@@ -43,6 +44,8 @@ class QuizGame:
             elif choice == 4:
                 self.show_highest_score()
             elif choice == 5:
+                self.delete_quiz_ui()
+            elif choice == 6:
                 print("\n👋 게임을 종료합니다. 이용해 주셔서 감사합니다!")
                 break
 
@@ -167,6 +170,24 @@ class QuizGame:
         print(f"\n📚 현재 총 {len(quizzes)}개의 퀴즈가 등록되어 있습니다.")
         for idx, q in enumerate(quizzes, start=1):
             print(f"{idx}. {q.question}")
+
+    def delete_quiz_ui(self):
+        if not self.manager.quizzes:
+            print("\n⚠️ 삭제할 퀴즈가 없습니다.")
+            return
+
+        print("\n🗑️ [퀴즈 삭제]")
+        self.show_quizzes()
+        quiz_number = self.get_number(
+            f"삭제할 퀴즈 번호를 입력하세요 (1-{len(self.manager.quizzes)}): ",
+            1,
+            len(self.manager.quizzes)
+        )
+        deleted_quiz = self.manager.delete_quiz(quiz_number - 1)
+        if deleted_quiz is None:
+            print("⚠️ 퀴즈를 저장하지 못해 삭제를 취소했습니다.")
+        else:
+            print(f"✅ '{deleted_quiz.question}' 퀴즈를 삭제했습니다.")
 
     def show_highest_score(self):
         if not self.manager.has_played:
