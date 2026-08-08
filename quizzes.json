@@ -20,23 +20,23 @@
         "answer": "3"
     },
     {
-        "question": "what is my name?",
+        "question": "한국의 수도는?",
         "options": [
-            "1) J",
-            "2) I",
-            "3) H",
-            "4) O"
-        ],
-        "answer": "0"
-    },
-    {
-        "question": "How old am I?",
-        "options": [
-            "1) 16",
-            "2) 26",
-            "3) 36",
-            "4) 46"
+            "1) 서울",
+            "2) 대전",
+            "3) 광주",
+            "4) 부산"
         ],
         "answer": "1"
+    },
+    {
+        "question": "지금 개발중인 프로그래밍 언어는?",
+        "options": [
+            "1) Java",
+            "2) C",
+            "3) JS",
+            "4) Python"
+        ],
+        "answer": "4"
     }
 ]
