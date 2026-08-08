@@ -28,12 +28,9 @@ class QuizGame:
             print("5. 게임 종료")
             print("=" * 35)
 
-            # 예외 처리: 메뉴 선택 시 숫자 및 범위 검증
-            try:
-                choice = int(input("원하는 메뉴 번호를 입력하세요 (1-5): ").strip())
-            except ValueError:
-                print("\n⚠️ 문자가 아닌 [숫자]만 입력해 주세요!")
-                continue  # 메뉴를 다시 출력하도록 맨 위로 이동
+            choice = self.get_number(
+                "원하는 메뉴 번호를 입력하세요 (1-5): ", 1, 5
+            )
 
             if choice == 1:
                 self.play_quiz()
@@ -46,8 +43,25 @@ class QuizGame:
             elif choice == 5:
                 print("\n👋 게임을 종료합니다. 이용해 주셔서 감사합니다!")
                 break
-            else:
-                print("\n⚠️ 1~5번 사이의 번호를 입력해 주세요.")
+
+    def get_number(self, prompt, minimum, maximum):
+        """공통 숫자 입력 및 범위 검증"""
+        while True:
+            raw_value = input(prompt).strip()
+            if not raw_value:
+                print("⚠️ 값을 입력해 주세요.")
+                continue
+
+            try:
+                value = int(raw_value)
+            except ValueError:
+                print("⚠️ 숫자로 입력해 주세요.")
+                continue
+
+            if minimum <= value <= maximum:
+                return value
+
+            print(f"⚠️ {minimum}부터 {maximum} 사이의 숫자를 입력해 주세요.")
 
     def play_quiz(self):
         if not self.manager.quizzes:
@@ -67,23 +81,19 @@ class QuizGame:
 
             # 0을 입력하면 힌트를 보여주고, 1~4 정답을 입력받기
             while True:
-                try:
-                    user_ans = int(input("정답 번호(1-4), 힌트는 0: ").strip())
-                    if user_ans == 0:
-                        if hint_used:
-                            print("⚠️ 힌트는 한 번만 사용할 수 있습니다.")
-                        elif q.hint:
-                            hint_used = True
-                            print(f"💡 힌트: {q.hint}")
-                        else:
-                            print("⚠️ 이 문제에는 힌트가 없습니다.")
-                        continue
-                    if 1 <= user_ans <= len(q.choices):
-                        break
+                user_ans = self.get_number(
+                    "정답 번호(1-4), 힌트는 0: ", 0, len(q.choices)
+                )
+                if user_ans == 0:
+                    if hint_used:
+                        print("⚠️ 힌트는 한 번만 사용할 수 있습니다.")
+                    elif q.hint:
+                        hint_used = True
+                        print(f"💡 힌트: {q.hint}")
                     else:
-                        print(f"⚠️ 1번부터 {len(q.choices)}번 사이의 번호를 선택해 주세요.")
-                except ValueError:
-                    print("⚠️ 숫자로 입력해 주세요!")
+                        print("⚠️ 이 문제에는 힌트가 없습니다.")
+                    continue
+                break
 
             # 정답 검증
             if user_ans == q.answer:
@@ -120,16 +130,7 @@ class QuizGame:
                     break
                 print("⚠️ 선택지 내용은 비워둘 수 없습니다.")
             
-        # 정답 번호 예외 처리
-        while True:
-            try:
-                answer = int(input("정답 번호(1~4)를 입력하세요: ").strip())
-                if 1 <= answer <= 4:
-                    break
-                else:
-                    print("⚠️ 1번에서 4번 사이의 번호를 입력해 주세요.")
-            except ValueError:
-                print("⚠️ 숫자로 정답 번호를 입력해 주세요.")
+        answer = self.get_number("정답 번호(1~4)를 입력하세요: ", 1, 4)
 
         while True:
             hint = input("힌트를 입력하세요: ").strip()
