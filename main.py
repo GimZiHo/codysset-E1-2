@@ -105,7 +105,10 @@ class QuizGame:
         total_possible = len(self.manager.quizzes) * 20
         print(f"당신의 최종 점수: {current_score}점 / {total_possible}점")
 
-        if current_score > self.manager.highest_score:
+        if not self.manager.has_played:
+            self.manager.save_score(current_score)
+            print("📝 첫 점수가 기록되었습니다.")
+        elif current_score > self.manager.highest_score:
             print("🏆 축하합니다! 최고 점수를 달성했습니다!")
             self.manager.save_score(current_score)
 
@@ -146,7 +149,10 @@ class QuizGame:
             print(f"{idx}. {q.question}")
 
     def show_highest_score(self):
-        print(f"\n🏆 현재 최고 점수: {self.manager.highest_score}점")
+        if not self.manager.has_played:
+            print("\n🏆 아직 기록된 점수가 없습니다.")
+        else:
+            print(f"\n🏆 현재 최고 점수: {self.manager.highest_score}점")
 
 
 if __name__ == "__main__":

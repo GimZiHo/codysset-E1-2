@@ -43,6 +43,7 @@ class QuizManager:
         self.state_filename = state_filename
         self.quizzes = []
         self.highest_score = 0
+        self.has_played = False
         
         # 프로그램 시작 시 데이터 불러오기
         self.load_state()
@@ -56,13 +57,17 @@ class QuizManager:
 
                 quiz_data = data["quizzes"]
                 best_score = data["best_score"]
+                has_played = data.get("has_played", best_score > 0)
                 if not isinstance(quiz_data, list):
                     raise ValueError("quizzes는 리스트여야 합니다.")
                 if not isinstance(best_score, int) or best_score < 0:
                     raise ValueError("best_score는 0 이상의 정수여야 합니다.")
+                if not isinstance(has_played, bool):
+                    raise ValueError("has_played는 참/거짓 값이어야 합니다.")
 
                 self.quizzes = [Quiz.from_dict(item) for item in quiz_data]
                 self.highest_score = best_score
+                self.has_played = has_played
                 return
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
             print(f"⚠️ state.json을 불러오지 못했습니다: {e}")
@@ -72,13 +77,15 @@ class QuizManager:
 
         self.quizzes = [Quiz.from_dict(item) for item in DEFAULT_QUIZ_DATA]
         self.highest_score = 0
+        self.has_played = False
         self.save_state()
 
     def save_state(self):
         """현재 퀴즈와 최고 점수를 state.json에 저장"""
         data = {
             "quizzes": [q.to_dict() for q in self.quizzes],
-            "best_score": self.highest_score
+            "best_score": self.highest_score,
+            "has_played": self.has_played
         }
         try:
             with open(self.state_filename, "w", encoding="utf-8") as f:
@@ -91,6 +98,7 @@ class QuizManager:
     def save_score(self, score):
         """새 최고 점수를 state.json에 저장"""
         self.highest_score = score
+        self.has_played = True
         self.save_state()
 
     def add_quiz(self, question, choices, answer, hint):
