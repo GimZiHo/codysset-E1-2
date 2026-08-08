@@ -41,8 +41,8 @@ class QuizManager:
         self.highest_score = score
         self.save_state()
 
-    def add_quiz(self, question, options, answer):
+    def add_quiz(self, question, choices, answer, hint):
         """새 퀴즈 추가 후 JSON 저장"""
-        new_quiz = Quiz(question, options, answer)
+        new_quiz = Quiz(question, choices, answer, hint)
         self.quizzes.append(new_quiz)
         self.save_state()

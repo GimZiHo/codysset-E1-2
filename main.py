@@ -50,30 +50,41 @@ class QuizGame:
         for q in self.manager.quizzes:
             print("\n------------------------------")
             print(f"Q. {q.question}")
-            for opt in q.options:
-                print(f"   {opt}")
+            for number, choice in enumerate(q.choices, start=1):
+                print(f"   {number}) {choice}")
 
-            # 예외 처리: 올바른 정답 번호(1~4)가 입력될 때까지 반복 받기
+            hint_used = False
+
+            # 0을 입력하면 힌트를 보여주고, 1~4 정답을 입력받기
             while True:
                 try:
-                    user_ans = int(input("정답 번호를 입력하세요 (1-4): ").strip())
-                    if 1 <= user_ans <= len(q.options):
-                        user_ans_str = str(user_ans)
+                    user_ans = int(input("정답 번호(1-4), 힌트는 0: ").strip())
+                    if user_ans == 0:
+                        if hint_used:
+                            print("⚠️ 힌트는 한 번만 사용할 수 있습니다.")
+                        elif q.hint:
+                            hint_used = True
+                            print(f"💡 힌트: {q.hint}")
+                        else:
+                            print("⚠️ 이 문제에는 힌트가 없습니다.")
+                        continue
+                    if 1 <= user_ans <= len(q.choices):
                         break
                     else:
-                        print(f"⚠️ 1번부터 {len(q.options)}번 사이의 번호를 선택해 주세요.")
+                        print(f"⚠️ 1번부터 {len(q.choices)}번 사이의 번호를 선택해 주세요.")
                 except ValueError:
                     print("⚠️ 숫자로 입력해 주세요!")
 
             # 정답 검증
-            if user_ans_str == q.answer:
-                print("✅ 정답입니다!")
-                current_score += 10
+            if user_ans == q.answer:
+                earned_score = 10 if hint_used else 20
+                current_score += earned_score
+                print(f"✅ 정답입니다! (+{earned_score}점)")
             else:
                 print(f"❌ 틀렸습니다. (정답: {q.answer}번)")
 
         print("\n🎉 모든 퀴즈가 끝났습니다!")
-        total_possible = len(self.manager.quizzes) * 10
+        total_possible = len(self.manager.quizzes) * 20
         print(f"당신의 최종 점수: {current_score}점 / {total_possible}점")
 
         if current_score > self.manager.highest_score:
@@ -90,12 +101,12 @@ class QuizGame:
                 break
             print("⚠️ 문제 내용은 비워둘 수 없습니다.")
         
-        options = []
+        choices = []
         for i in range(1, 5):
             while True:
                 opt_text = input(f"선택지 {i}번 입력: ").strip()
                 if opt_text:
-                    options.append(f"{i}) {opt_text}")
+                    choices.append(opt_text)
                     break
                 print("⚠️ 선택지 내용은 비워둘 수 없습니다.")
             
@@ -104,14 +115,19 @@ class QuizGame:
             try:
                 answer = int(input("정답 번호(1~4)를 입력하세요: ").strip())
                 if 1 <= answer <= 4:
-                    answer_str = str(answer)
                     break
                 else:
                     print("⚠️ 1번에서 4번 사이의 번호를 입력해 주세요.")
             except ValueError:
                 print("⚠️ 숫자로 정답 번호를 입력해 주세요.")
 
-        self.manager.add_quiz(question, options, answer_str)
+        while True:
+            hint = input("힌트를 입력하세요: ").strip()
+            if hint:
+                break
+            print("⚠️ 힌트 내용은 비워둘 수 없습니다.")
+
+        self.manager.add_quiz(question, choices, answer, hint)
         print("✅ 새 퀴즈가 안전하게 저장되었습니다!")
 
     def show_quizzes(self):
