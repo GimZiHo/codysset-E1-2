@@ -68,11 +68,18 @@ class QuizGame:
             print("\n⚠️ 등록된 퀴즈가 없습니다. 먼저 퀴즈를 추가해주세요!")
             return
 
-        print("\n🚀 퀴즈를 시작합니다!")
+        quiz_count = self.get_number(
+            f"몇 문제를 풀지 입력하세요 (1-{len(self.manager.quizzes)}): ",
+            1,
+            len(self.manager.quizzes)
+        )
+        selected_quizzes = self.manager.quizzes[:quiz_count]
+
+        print(f"\n🚀 퀴즈를 시작합니다! (총 {quiz_count}문제)")
         earned_score = 0
         hint_penalty = 0
 
-        for q in self.manager.quizzes:
+        for q in selected_quizzes:
             print("\n------------------------------")
             q.display()
 
@@ -103,10 +110,11 @@ class QuizGame:
                 print(f"❌ 틀렸습니다. (정답: {q.answer}번)")
 
         print("\n🎉 모든 퀴즈가 끝났습니다!")
-        total_possible = len(self.manager.quizzes) * 20
+        total_possible = quiz_count * 20
         final_score = max(0, earned_score - hint_penalty)
+        penalty_text = f"-{hint_penalty}점" if hint_penalty else "0점"
         print(f"획득 점수: {earned_score}점")
-        print(f"힌트 감점: -{hint_penalty}점")
+        print(f"힌트 감점: {penalty_text}")
         print(f"당신의 최종 점수: {final_score}점 / {total_possible}점")
 
         if not self.manager.has_played:
