@@ -1,3 +1,92 @@
+# Python 콘솔 퀴즈 게임
+
+## 프로젝트 개요
+
+Python 기본 문법과 객체 지향 구조를 활용해 만든 터미널 퀴즈 게임입니다. 퀴즈 플레이, 새 문제 추가, 목록 조회, 최고 점수 확인을 지원하며 퀴즈와 점수는 `state.json`에 저장됩니다.
+
+## 퀴즈 주제와 선정 이유
+
+퀴즈 주제는 Python 기초와 일상 상식입니다. 프로그램 구조와 입력·출력 흐름에 집중할 수 있도록 초보자가 쉽게 이해하고 풀 수 있는 문제를 선정했습니다.
+
+## 실행 환경
+
+- Python 3.10 이상
+- 외부 라이브러리 없음
+
+## 실행 방법
+
+```bash
+git clone git@github.com:GimZiHo/codysset-E1-2.git
+cd codysset-E1-2
+python3 main.py
+```
+
+Windows에서 `python3`를 사용할 수 없다면 다음과 같이 실행합니다.
+
+```bash
+python main.py
+```
+
+## 기능 목록
+
+- 퀴즈 풀기 및 정답·오답 판정
+- 힌트 사용: 일반 정답 20점, 힌트 사용 후 정답 10점
+- 문제, 선택지 4개, 정답, 힌트를 입력하여 퀴즈 추가
+- 등록된 퀴즈 목록 조회
+- 최고 점수 저장 및 조회
+- 빈 입력, 문자, 범위 밖 숫자 재입력 처리
+- `Ctrl+C` 및 EOF 발생 시 상태 저장 후 안전 종료
+- `state.json`이 없거나 손상된 경우 기본 퀴즈 5개로 복구
+
+## 파일 구조
+
+```text
+codysset-E1-2/
+├── main.py                 # 메뉴, 입력 검증, 게임 진행
+├── manager.py              # 퀴즈 목록과 state.json 입출력
+├── models.py               # Quiz 클래스와 데이터 검증
+├── state.json              # 퀴즈와 최고 점수 영구 저장
+├── screenshot/
+│   └── git_pull.png        # Git pull 실습 증빙
+├── .gitignore
+└── README.md
+```
+
+## `state.json` 설명
+
+`state.json`은 UTF-8 JSON 파일이며 프로그램 시작 시 불러오고, 퀴즈 추가·최고 점수 갱신·안전 종료 시 저장됩니다.
+
+```json
+{
+  "quizzes": [
+    {
+      "question": "파이썬에서 화면에 문자를 출력하는 함수는?",
+      "choices": ["input", "print", "len", "type"],
+      "answer": 2,
+      "hint": "출력을 뜻하는 영어 단어입니다."
+    }
+  ],
+  "best_score": 80,
+  "has_played": true
+}
+```
+
+- `quizzes`: 퀴즈 객체 목록
+- `question`: 문제 내용
+- `choices`: 4개의 선택지
+- `answer`: 1~4 사이의 정답 번호
+- `hint`: 힌트 내용
+- `best_score`: 기록된 최고 점수
+- `has_played`: 한 번이라도 퀴즈를 완료했는지 여부
+
+## Git clone·pull 실습
+
+![Git pull 실습 결과](screenshot/git_pull.png)
+
+---
+
+## 과제 요구사항 및 평가 항목
+
 1. 미션 소개
 처음부터 끝까지 직접 만들어 보는 것
 터미널에서 동작하는 나만의 퀴즈 게임
