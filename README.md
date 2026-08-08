@@ -104,6 +104,8 @@ codysset-E1-2/
 
 `agent/git-merge-practice` 브랜치에서 문서를 수정한 뒤 `main` 브랜치에 `--no-ff` 방식으로 병합했습니다. 병합 결과는 `git log --oneline --graph --all`에서 확인할 수 있습니다.
 
+![Git 브랜치 병합 그래프](screenshot/git_log_graph.png)
+
 ---
 
 ## 과제 요구사항 및 평가 항목
