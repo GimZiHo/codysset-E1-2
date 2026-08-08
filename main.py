@@ -73,9 +73,7 @@ class QuizGame:
 
         for q in self.manager.quizzes:
             print("\n------------------------------")
-            print(f"Q. {q.question}")
-            for number, choice in enumerate(q.choices, start=1):
-                print(f"   {number}) {choice}")
+            q.display()
 
             hint_used = False
 
@@ -96,7 +94,7 @@ class QuizGame:
                 break
 
             # 정답 검증
-            if user_ans == q.answer:
+            if q.check_answer(user_ans):
                 earned_score = 10 if hint_used else 20
                 current_score += earned_score
                 print(f"✅ 정답입니다! (+{earned_score}점)")
