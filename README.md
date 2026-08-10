@@ -16,8 +16,8 @@ Python 기본 문법과 객체 지향 구조를 활용해 만든 터미널 퀴�
 ## 실행 방법
 
 ```bash
-git clone git@github.com:GimZiHo/codysset-E1-2.git
-cd codysset-E1-2
+git clone git@github.com:GimZiHo/codyssey-E1-2.git
+cd codyssey-E1-2
 python3 main.py
 ```
 
@@ -166,6 +166,31 @@ codysset-E1-2/
 예시: `Feat(quiz): 힌트 사용 시 점수 차감 기능 추가`
 
 ## Git 실습 기록
+
+### 커밋 수 및 로그
+
+다음은 문서 작성 시점에 `main` 브랜치에서 확인한 실제 출력입니다. 전체 커밋은 38개로 과제 기준인 10개 이상을 충족합니다.
+
+```bash
+$ git rev-list --count HEAD
+38
+
+$ git log -12 --oneline
+6391ba7 Docs(readme): 요구 변경별 수정 모듈 가이드 추가
+77a15c5 Docs(readme): 상태 파일 백업 및 복구 정책 추가
+3586d9c Docs(readme): 대용량 데이터 확장 방안 정리
+770c4e8 Docs(readme): JSON 필드와 중첩 구조 설계 근거 추가
+bf753e6 Docs(readme): fast-forward 병합 로그 비교 추가
+1f1a7b4 Docs(readme): no-ff 병합 예시와 그래프 추가
+8150ec0 Docs(readme): 브랜치와 no-ff 병합 의미 설명
+27808f9 Docs(readme): JSON 선택 이유 설명 추가
+f4acc6d Docs(readme): 클래스 채택 이유와 장단점 설명
+813445d Docs(readme): 커밋 단위와 메시지 규칙 추가
+220eebb Docs: README 핵심 내용 중심으로 정리
+e6d2899 Docs: 동료평가 질문과 설명 답변 정리
+```
+
+현재 커밋 수와 전체 로그는 각각 `git rev-list --count HEAD`, `git log --oneline --all`로 다시 확인할 수 있습니다.
 
 ### Clone 및 pull
 
