@@ -124,4 +124,28 @@ Git은 두 브랜치의 이력이 직선으로 이어질 때 기본적으로 `ma
 
 이 프로젝트에서는 `main`의 안정적인 상태와 개발 작업을 분리하기 위해 `agent/git-merge-practice` 브랜치를 생성한 뒤, 작업 완료 후 `--no-ff`로 병합했습니다. 브랜치를 사용하면 여러 사람이 독립적으로 작업하고 검토가 끝난 변경만 안정 브랜치에 반영할 수 있으며, 병합 커밋은 기능이나 릴리스 단위의 변경 이력을 추적하고 필요할 때 되돌리기 쉽게 해줍니다.
 
+다음은 브랜치를 만들고 병합하는 명령의 예시입니다. 정확한 옵션명은 `--no-ff`입니다.
+
+```bash
+git checkout -b agent/git-merge-practice
+# 파일 수정 후 add와 commit 수행
+git checkout main
+git merge --no-ff agent/git-merge-practice
+git log --oneline --graph --all
+```
+
+이 저장소에서 위 병합은 텍스트 그래프로 다음과 같이 확인됩니다.
+
+```text
+*   7d09c62 Merge branch 'agent/git-merge-practice'
+|\
+| * 80164cd Docs: 브랜치 병합 실습 기록 추가
+|/
+*   387a184 Docs: 보너스 기능과 점수 기록 스키마 반영
+```
+
+`80164cd`는 작업 브랜치에서 만든 커밋이고, 두 선이 합쳐지는 `7d09c62`는 `--no-ff`로 생성된 병합 커밋입니다. 따라서 병합 이후에도 어느 변경이 별도 브랜치에서 진행됐는지 한눈에 구분할 수 있습니다. `--no-ff`를 사용하지 않고 fast-forward로 병합했다면 `main`이 `80164cd`로 바로 이동하므로 별도의 병합 커밋과 작업 경계가 남지 않습니다.
+
+아래 이미지는 같은 이력을 캡처한 제출용 증빙입니다.
+
 ![Git 브랜치 병합 그래프](screenshot/git_log_graph.png)
