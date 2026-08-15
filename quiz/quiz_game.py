@@ -1,8 +1,8 @@
 import random
 
-from manager import QuizManager
+from quiz.quiz_manager import QuizManager
 
-lass QuizGame:
+class QuizGame:
     """전체 게임 진행 및 콘솔 메뉴 처리를 담당하는 클래스"""
     def __init__(self):
         self.manager = QuizManager()
