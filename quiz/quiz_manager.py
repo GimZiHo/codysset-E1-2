@@ -41,7 +41,7 @@ DEFAULT_QUIZ_DATA = [
 
 class QuizManager:
     """퀴즈 목록 관리 및 JSON 파일 입출력을 담당하는 클래스"""
-    def __init__(self, state_filename="../data/state.json"):
+    def __init__(self, state_filename="state.json"):
         self.state_filename = state_filename
         self.quizzes = []
         self.highest_score = 0

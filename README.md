@@ -42,12 +42,15 @@ Windows에서 `python3` 명령을 사용할 수 없다면 `python main.py`로 �
 
 ```text
 codysset-E1-2/
-├── main.py                 # 메뉴, 입력 검증, 게임 진행
-├── manager.py              # 퀴즈 목록과 JSON 입출력
-├── models.py               # Quiz 클래스와 데이터 검증
-├── state.json              # 퀴즈, 점수, 플레이 기록
-├── evaluation.txt          # 동료평가 질문과 설명 답변
-├── screenshot/             # Git 실습 증빙 이미지
+├── main.py                     # 프로그램 실행 진입점
+├── quiz/
+│   ├── __init__.py             # quiz 패키지
+│   ├── quiz.py                 # Quiz 클래스와 데이터 검증
+│   ├── quiz_manager.py         # 퀴즈 목록과 JSON 입출력
+│   └── quiz_game.py            # 메뉴, 입력 검증, 게임 진행
+├── state.json                  # 퀴즈, 점수, 플레이 기록
+├── evaluation.txt              # 동료평가 질문과 설명 답변
+├── screenshot/                 # Git 실습 증빙 이미지
 ├── .gitignore
 └── README.md
 ```
